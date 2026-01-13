@@ -1,0 +1,2 @@
+In order to switch to another directory in Unix we use the __ command. The command has several
+arguments that it can use. For example, to switch to a parent directory we do "command" __ and to change to the root directory we can use "command" __.
