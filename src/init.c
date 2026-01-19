@@ -11,7 +11,7 @@
 
 int open_window(Game *);
 int close_window(Game *);
-int start_game(Game *, int *, int * ); 
+int start_game(Game *, int *, int *); 
 
 int main() {
         
@@ -47,7 +47,8 @@ int open_window(Game *g) {
 
     g->renderer =  SDL_CreateRenderer(g->window, -1, SDL_RENDERER_ACCELERATED);
 
-    if( !g->renderer ) {
+
+    if( !g->renderer) {
         fprintf(stderr, "Renderer failed to begin display: %s\n", SDL_GetError());
         return FAILURE;
     }
@@ -60,7 +61,6 @@ int open_window(Game *g) {
     }
    
 
-    SDL_SetRenderDrawColor( g->renderer, 0, 0, 0, 0 );
 
     while( quit == 0 ) {
         while( SDL_PollEvent(&e) ) {
@@ -68,7 +68,7 @@ int open_window(Game *g) {
                 quit = 1;
             }
         }
-    /* drawing a white screen */
+    SDL_SetRenderDrawColor( g->renderer, 0, 0, 0, 0 );
     SDL_RenderClear(g->renderer);
 
     start_game(g, &num_chr_disp1, &num_chr_disp2);
@@ -89,7 +89,7 @@ int open_window(Game *g) {
    return SUCCESS;
 }
 
-int start_game( Game *g, int *num_chr_disp1, int *num_chr_disp2 ) {
+int start_game( Game *g, int *num_chr_disp1, int *num_chr_disp2) {
     
     char *welcome_str1 = "Welcome to Type_Study.";
     char *welcome_str2 = "Please";
@@ -142,12 +142,13 @@ int start_game( Game *g, int *num_chr_disp1, int *num_chr_disp2 ) {
     SDL_Rect text_rect = { pos_x, pos_y, g->text_surface->w, g->text_surface->h };
     SDL_RenderCopy(g->renderer, g->text_texture, NULL, &text_rect);
     
-    if( *num_chr_disp2 <= strlen(welcome_str2) ) 
+    if( *num_chr_disp2 <= strlen(welcome_str2) ) { 
     SDL_Delay(100);
+    }
 
-    if( *num_chr_disp2 > strlen(welcome_str2) ) {
+    if( *num_chr_disp2 >= strlen(welcome_str2) ) {
     /* make the buttons for login signup */
-    SDL_Rect b_rect = { 300, 300, B_WIDTH, B_HEIGHT };
+    SDL_Rect b_rect = { ( G_WIDTH - B_WIDTH ) / 2, 200, B_WIDTH, B_HEIGHT };
     SDL_SetRenderDrawColor(g->renderer, 200, 200, 200, 255);
     SDL_RenderFillRect(g->renderer, &b_rect);
 
