@@ -12,9 +12,15 @@
 int open_window(Game *);
 int close_window(Game *);
 int start_game(Game *, int *, int *); 
+int side_count1 = 0;
+int side_count2 = 0;
+
+
+/* static variables for cool effects */
 
 int main() {
         
+    /* could put this in a set up func later */
     Game *g = malloc( sizeof(Game) );
     open_window(g);
 
@@ -55,6 +61,7 @@ int open_window(Game *g) {
     /* change to be compatable with more fonts */
     g->font = TTF_OpenFont( MY_FONT, 48 );
 
+
     if( !g->font ) {
         fprintf(stderr, "TTF Font failed to init: %s\n", TTF_GetError());
         return FAILURE;
@@ -89,10 +96,13 @@ int open_window(Game *g) {
    return SUCCESS;
 }
 
-int start_game( Game *g, int *num_chr_disp1, int *num_chr_disp2) {
+int start_game( Game *g, int *num_chr_disp1, int *num_chr_disp2 ) {
     
     char *welcome_str1 = "Welcome to Type_Study.";
     char *welcome_str2 = "Please";
+    char *login_str = "Login";
+    char *signup_str = "Sign up";
+    char *guest_str = "Play as guest";
     char buff[BUFF_SIZE];
     int pos_x, pos_y;
     SDL_Color text_color = { 255 ,255 ,255 ,255 }; /* black */
@@ -115,7 +125,7 @@ int start_game( Game *g, int *num_chr_disp1, int *num_chr_disp2) {
 
         buff[*num_chr_disp2] = '\0';
         strncpy(buff, welcome_str2, *num_chr_disp2);
-        pos_x = 300;
+        pos_x = 320;
         pos_y = 100;
 
         if( *num_chr_disp2 < strlen(welcome_str2) ) {
@@ -124,10 +134,19 @@ int start_game( Game *g, int *num_chr_disp1, int *num_chr_disp2) {
     }
 
 
-
- 
     /* stored in CPU */ 
-    g->text_surface = TTF_RenderText_Solid( g->font, buff, text_color );
+
+    if( *num_chr_disp2 >= strlen(welcome_str2)) {
+        g->text_surface = TTF_RenderText_Solid( g->font, login_str, text_color );
+        pos_x = 320;
+        pos_y = 220;
+    } else {
+
+        g->text_surface = TTF_RenderText_Solid( g->font, buff, text_color );
+    }
+
+
+
     if( !g->text_surface ) {
         fprintf(stderr, "Text Surface failed to init: %s\n", TTF_GetError());
         return FAILURE;
@@ -137,7 +156,27 @@ int start_game( Game *g, int *num_chr_disp1, int *num_chr_disp2) {
     if( !g->text_texture ) {
         fprintf(stderr, "Text Texture failed to init: %s\n", TTF_GetError());
         return FAILURE;
+ 
     }
+    /* create login and sign in buttons */
+    if( *num_chr_disp2 >= strlen(welcome_str2) ) {
+
+        SDL_SetRenderDrawColor(g->renderer, 255, 255, 255, 255);
+        SDL_Delay(100);
+        SDL_RenderDrawLines(g->renderer, login_shape, side_count1);
+        
+        if( side_count1 <= MAX_SIDES ) 
+        side_count1++;
+
+        if( side_count1 > MAX_SIDES ) {
+            SDL_RenderDrawLines(g->renderer, signin_shape, side_count2);
+            
+            if( side_count2 <= 4 ) 
+                side_count2++;
+        }
+    }
+        
+
 
     SDL_Rect text_rect = { pos_x, pos_y, g->text_surface->w, g->text_surface->h };
     SDL_RenderCopy(g->renderer, g->text_texture, NULL, &text_rect);
@@ -146,18 +185,7 @@ int start_game( Game *g, int *num_chr_disp1, int *num_chr_disp2) {
     SDL_Delay(100);
     }
 
-    if( *num_chr_disp2 >= strlen(welcome_str2) ) {
-    /* make the buttons for login signup */
-    SDL_Rect b_rect = { ( G_WIDTH - B_WIDTH ) / 2, 200, B_WIDTH, B_HEIGHT };
-    SDL_SetRenderDrawColor(g->renderer, 200, 200, 200, 255);
-    SDL_RenderFillRect(g->renderer, &b_rect);
 
-
-    }
-
-
-    
-    
     
     return SUCCESS;
 }
