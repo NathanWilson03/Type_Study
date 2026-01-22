@@ -6,6 +6,7 @@
 #define B_WIDTH 250
 #define B_HEIGHT 60
 #define MAX_SIDES 4
+#define MAX_BUTTONS 5
 #define SIGNUP_X 350
 #define SIGNUP_Y 325
 #define LOGIN_X 350
@@ -20,9 +21,9 @@ extern int side_count2;
 typedef struct {
     SDL_Window *window;
     SDL_Renderer *renderer;
-    SDL_Surface *text_surface;
-    TTF_Font *font;
-    SDL_Texture *text_texture;
+    SDL_Surface *text_surface[4];
+    TTF_Font *font[2];
+    SDL_Texture *text_texture[4];
     
 } Game;
 
@@ -43,3 +44,5 @@ const SDL_Point signin_shape[] = {
         { 300, 300 }
     };
        
+
+const char * start_buttons[] = { NULL, "Login", "Signup", "Play as guest" };
